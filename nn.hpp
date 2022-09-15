@@ -25,10 +25,11 @@ class Neuron : public Module
 public:
     std::vector<TensorPtr> _w;
     TensorPtr _b;
+    bool activate;
 
     ~Neuron() {}
-    Neuron(int nin)
-        : _w{}, _b(std::make_shared<Tensor>(0.0))
+    Neuron(int nin, bool activate = true)
+        : _w{}, _b(std::make_shared<Tensor>(0.0)), activate(activate)
     {
         init_w(nin);
     }
@@ -63,7 +64,11 @@ public:
             w_x = w_x + (x[i] * _w[i]);
         }
         auto w_x_b = w_x + _b;
-        return w_x_b->relu();
+        if (activate)
+        {
+            return w_x_b->relu();
+        }
+        return w_x_b;
     }
 
     std::vector<TensorPtr> parameters()
@@ -81,9 +86,9 @@ public:
             strm << "Neuron(n_weights=" << n._w.size() << " tensors=[\n";
             for (auto i = 0; i < n._w.size(); ++i)
             {
-                strm << "\t\t" << n._w[i];
+                strm << "\t\t\t" << n._w[i];
             }
-            strm << "\t]\n";
+            strm << "\t\t]\n";
             return strm;
         }
         return strm << "Neuron(n_weights=" << n._w.size() << ")\n";
@@ -96,9 +101,10 @@ public:
     int _in_neu;
     int _out_neu;
     std::vector<Neuron> _neurons;
+    bool activate;
     ~Layer() {}
-    Layer(int nin, int nout)
-        : _in_neu(nin), _out_neu(nout), _neurons({})
+    Layer(int nin, int nout, bool activate = true)
+        : _in_neu(nin), _out_neu(nout), _neurons({}), activate(activate)
     {
         init_neurons();
     }
@@ -106,7 +112,7 @@ public:
     {
         for (auto i = 0; i < _out_neu; i++)
         {
-            _neurons.emplace_back(_in_neu);
+            _neurons.emplace_back(_in_neu, activate);
         }
     }
 
@@ -142,12 +148,70 @@ public:
             strm << "Layer(n_neurons=" << l._out_neu << " Neuron=[\n";
             for (auto neuron : l._neurons)
             {
-                strm << "\t" << neuron;
+                strm << "\t\t" << neuron;
             }
-            strm << "]\n";
+            strm << "\t]\n";
             return strm;
         }
         return strm << "Layer(n_neurons=" << l._out_neu << ")\n";
     }
 };
+
+class MLP : public Module
+{
+public:
+    std::vector<Layer> layers;
+    ~MLP() {}
+    MLP(int nin, const std::vector<int> &lay)
+        : layers({})
+    {
+        std::vector<int> temp(lay.begin(), lay.end());
+        temp.insert(temp.begin(), nin);
+        for (auto i = 0; i < lay.size(); ++i)
+        {
+            // All layers before the last layer has activation
+            layers.emplace_back(temp[i], temp[i + 1], i != (lay.size() - 1));
+        }
+    }
+
+    // Do forward pass on the entire network
+    std::vector<TensorPtr> operator()(std::vector<TensorPtr> x)
+    {
+        for (auto layer : layers)
+        {
+            x = layer(x);
+        }
+        return x;
+    }
+
+    std::vector<TensorPtr> parameters()
+    {
+        std::vector<TensorPtr> out;
+        for (auto layer : layers)
+        {
+            for (auto params : layer.parameters())
+            {
+                out.push_back(params);
+            }
+        }
+        return out;
+    }
+
+    friend std::ostream &operator<<(std::ostream &strm, const MLP &m)
+    {
+        bool debug = true;
+        if (debug)
+        {
+            strm << "MLP(n_layers=" << m.layers.size() << " Layer=[\n";
+            for (auto layer : m.layers)
+            {
+                strm << "\t" << layer;
+            }
+            strm << "]\n";
+            return strm;
+        }
+        return strm << "MLP(n_layers=" << m.layers.size() << ")\n";
+    }
+};
+
 #endif

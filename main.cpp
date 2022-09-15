@@ -1,4 +1,4 @@
-#include "engine.hpp"
+// #include "engine.hpp"
 #include "nn.hpp"
 #include <iostream>
 #include <memory>
@@ -26,7 +26,7 @@ int main()
     // f->backward();
     // std::cout << a << b << e << d << f;
 
-    auto a = Layer(3, 6);
+    auto a = MLP(3, std::vector<int>{3, 3, 2});
     std::cout << a;
     return 0;
 }
