@@ -5,7 +5,7 @@ Inspired from micrograd, a tiny library with 2 files that supports automatic dif
 Example:
 
 ```cpp
-#include "engine.cpp"
+#include "engine.hpp"
 
 auto a = std::make_shared<Tensor>(-4.0f);
 auto b = std::make_shared<Tensor>(2.0f);
