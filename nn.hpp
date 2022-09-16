@@ -15,7 +15,7 @@ public:
     {
         for (auto p : parameters())
         {
-            p->_grad = 0.0f;
+            p->_grad = 0.0;
         }
     }
 };
@@ -59,7 +59,7 @@ public:
     TensorPtr operator()(std::vector<TensorPtr> x)
     {
         auto w_x = x[0] * _w[0];
-        for (auto i = 0; i < x.size(); ++i)
+        for (auto i = 1; i < x.size(); ++i)
         {
             w_x = w_x + (x[i] * _w[i]);
         }

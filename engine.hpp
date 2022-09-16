@@ -81,7 +81,7 @@ public:
         auto out = std::make_shared<Tensor>(std::pow(data, exp->data), std::vector<TensorPtr>{shared_from_this()});
         out->_backward = [out, exp, self = shared_from_this()]()
         {
-            self->_grad = exp->data * std::pow(self->data, exp->data - 1) * out->_grad;
+            self->_grad += exp->data * std::pow(self->data, exp->data - 1) * out->_grad;
         };
         return out;
     }
