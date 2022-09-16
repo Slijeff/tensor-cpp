@@ -1,6 +1,6 @@
 ## Tensor++
 
-Inspired from micrograd, a tiny library with 2 files that supports automatic differentiation.
+Inspired by micrograd, a tiny library with 2 files that supports automatic differentiation.
 
 Example:
 
