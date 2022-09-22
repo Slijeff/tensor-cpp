@@ -15,9 +15,9 @@ class Tensor : public std::enable_shared_from_this<Tensor>
 {
 public:
     double data;
-    double _grad;
     std::vector<TensorPtr> prev;
     std::function<void()> _backward;
+    double _grad;
     bool visited;
 
     Tensor(double data, std::vector<TensorPtr> _children = {})

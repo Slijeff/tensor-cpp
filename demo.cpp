@@ -47,7 +47,7 @@ int main()
         }
         // calculate loss
         auto loss = make_shared<Tensor>(0.0);
-        for (auto i = 0; i < ys.size(); i++)
+        for (size_t i = 0; i < ys.size(); i++)
         {
             loss = loss + (ypred[i][0] - ys[i])->pow(2);
         }
@@ -66,7 +66,7 @@ int main()
         {
             cout << "epoch: " << epoch + 1 << " loss: " << loss->data << "\n";
             cout << "predictions: ";
-            for (auto i = 0; i < ypred.size(); i++)
+            for (size_t i = 0; i < ypred.size(); i++)
             {
                 cout << ypred[i][0]->data << " ";
             }

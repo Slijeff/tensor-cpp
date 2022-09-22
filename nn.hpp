@@ -59,7 +59,7 @@ public:
     TensorPtr operator()(std::vector<TensorPtr> x)
     {
         auto w_x = x[0] * _w[0];
-        for (auto i = 1; i < x.size(); ++i)
+        for (size_t i = 1; i < x.size(); ++i)
         {
             w_x = w_x + (x[i] * _w[i]);
         }
@@ -84,7 +84,7 @@ public:
         if (debug)
         {
             strm << "Neuron(n_weights=" << n._w.size() << " tensors=[\n";
-            for (auto i = 0; i < n._w.size(); ++i)
+            for (size_t i = 0; i < n._w.size(); ++i)
             {
                 strm << "\t\t\t" << n._w[i];
             }
@@ -167,7 +167,7 @@ public:
     {
         std::vector<int> temp(lay.begin(), lay.end());
         temp.insert(temp.begin(), nin);
-        for (auto i = 0; i < lay.size(); ++i)
+        for (size_t i = 0; i < lay.size(); ++i)
         {
             // All layers before the last layer has activation
             layers.emplace_back(temp[i], temp[i + 1], i != (lay.size() - 1));
