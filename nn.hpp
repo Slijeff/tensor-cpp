@@ -197,6 +197,12 @@ public:
         return out;
     }
 
+    void step(double learning_rate) {
+        for (auto p: parameters()) {
+            p->data += -learning_rate * p->_grad;
+        }
+    }
+
     friend std::ostream &operator<<(std::ostream &strm, const MLP &m)
     {
         bool debug = true;

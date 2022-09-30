@@ -55,12 +55,8 @@ int main()
         network.zero_grad();
         // backward propagation
         loss->backward();
-
         // update network
-        for (auto p : network.parameters())
-        {
-            p->data += -0.01 * p->_grad;
-        }
+        network.step(0.01);
 
         if (epoch % 10 == 0)
         {
